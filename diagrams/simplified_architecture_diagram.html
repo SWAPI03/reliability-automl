@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reliability-Aware AutoML - Simplified Architecture</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #ffffff;
+  font-family: Arial, sans-serif;
+  color: #000000;
+  padding: 20px;
+}
+h1 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+  color: #1a1a1a;
+}
+.architecture {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.layer {
+  border: 3px solid #000;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  background: #f9f9f9;
+}
+.layer-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #1a1a1a;
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+}
+.components {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+.component {
+  border: 2px solid #333;
+  border-radius: 5px;
+  padding: 15px;
+  background: white;
+}
+.component-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: #1a1a1a;
+}
+.component-desc {
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.4;
+}
+.flow-arrow {
+  text-align: center;
+  font-size: 2rem;
+  margin: 10px 0;
+  color: #333;
+}
+.pipeline-stage {
+  border: 2px solid #555;
+  border-radius: 5px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: white;
+}
+.stage-number {
+  display: inline-block;
+  background: #1a1a1a;
+  color: white;
+  padding: 3px 10px;
+  border-radius: 3px;
+  font-weight: bold;
+  margin-right: 8px;
+}
+.stage-name {
+  font-weight: bold;
+  font-size: 1rem;
+}
+.stage-desc {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 5px;
+  padding-left: 45px;
+}
+.legend {
+  margin-top: 30px;
+  padding: 15px;
+  background: #f0f0f0;
+  border-radius: 5px;
+}
+.legend-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+</style>
+</head>
+<body>
+
+<h1>Reliability-Aware AutoML System Architecture</h1>
+<p style="text-align: center; margin-bottom: 30px; font-size: 1.1rem; color: #555;">
+  A comprehensive system for evaluating data trustworthiness and training reliable ML models
+</p>
+
+<div class="architecture">
+
+  <!-- LAYER 1: USER INTERFACE -->
+  <div class="layer">
+    <div class="layer-title">LAYER 1: USER INTERFACE (Streamlit)</div>
+    <div class="components">
+      <div class="component">
+        <div class="component-name">📁 File Upload</div>
+        <div class="component-desc">Users upload CSV datasets through Streamlit's file_uploader widget</div>
+      </div>
+      <div class="component">
+        <div class="component-name">📊 Interactive Dashboard</div>
+        <div class="component-desc">Real-time visualization of reliability scores, trust metrics, and model performance</div>
+      </div>
+      <div class="component">
+        <div class="component-name">📈 Charts & Metrics</div>
+        <div class="component-desc">Display trust distributions, score breakdowns, and comparison charts</div>
+      </div>
+      <div class="component">
+        <div class="component-name">⬇️ Export Results</div>
+        <div class="component-desc">Download trained models (.joblib) and explainability reports (.json)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-arrow">⬇️</div>
+
+  <!-- LAYER 2: PIPELINE ENGINE -->
+  <div class="layer">
+    <div class="layer-title">LAYER 2: PIPELINE ENGINE (16 Processing Stages)</div>
+    
+    <h3 style="margin: 15px 0 10px 0; color: #1a1a1a;">Phase 1: Data Ingestion & Validation</h3>
+    
+    <div class="pipeline-stage">
+      <span class="stage-number">1</span>
+      <span class="stage-name">Validator</span>
+      <div class="stage-desc">
+        • Parse CSV file using pandas<br>
+        • Detect column types (numeric, categorical, datetime)<br>
+        • Identify target column using heuristics<br>
+        • Validate minimum row count (≥10 rows)
+      </div>
+    </div>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">2</span>
+      <span class="stage-name">Preprocessor</span>
+      <div class="stage-desc">
+        • Impute missing values (mean for numeric, mode for categorical)<br>
+        • One-hot encode categorical features<br>
+        • Standardize numeric features (mean=0, std=1)<br>
+        • Preserve original raw data unchanged
+      </div>
+    </div>
+
+    <h3 style="margin: 25px 0 10px 0; color: #1a1a1a;">Phase 2: Five-Dimensional Reliability Scoring</h3>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">3</span>
+      <span class="stage-name">Structural Score (S)</span>
+      <div class="stage-desc">
+        • Calculate missing value ratio<br>
+        • Detect duplicate rows<br>
+        • Identify constant columns<br>
+        • Formula: S = 1 - (0.4×missing + 0.3×duplicate + 0.3×constant)
+      </div>
+    </div>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">4</span>
+      <span class="stage-name">Statistical Score (T)</span>
+      <div class="stage-desc">
+        • Detect outliers using Z-score (small datasets) or IsolationForest (large datasets)<br>
+        • Identify low-variance features<br>
+        • Formula: T = 1 - (0.6×outlier_ratio + 0.4×low_variance_ratio)
+      </div>
+    </div>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">5</span>
+      <span class="stage-name">Pattern Analysis (Similarity & Conflict)</span>
+      <div class="stage-desc">
+        • Compute pairwise cosine similarity between rows<br>
+        • Calculate Similarity Score (Sim) = mean similarity across all pairs<br>
+        • Detect conflicts: identical features with different labels<br>
+        • Calculate Conflict Score (C) = conflicting_pairs / total_pairs
+      </div>
+    </div>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">6</span>
+      <span class="stage-name">Deduction Score (D)</span>
+      <div class="stage-desc">
+        • Cluster rows using KMeans (5 clusters)<br>
+        • Assign pseudo-source trust to each cluster<br>
+        • Formula: D = mean trust of cluster assignments
+      </div>
+    </div>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">7</span>
+      <span class="stage-name">Reliability Fusion</span>
+      <div class="stage-desc">
+        • Combine all five scores into composite Reliability Score (R)<br>
+        • Learn optimal weights using logistic regression OR use configured weights<br>
+        • Formula: R = w₁S + w₂T + w₃Sim + w₄(1-C) + w₅D<br>
+        • Output: R ∈ [0, 1] (higher = more reliable)
+      </div>
+    </div>
+
+    <h3 style="margin: 25px 0 10px 0; color: #1a1a1a;">Phase 3: Trust Propagation</h3>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">8</span>
+      <span class="stage-name">Reliability Graph</span>
+      <div class="stage-desc">
+        • Build graph where nodes = data rows<br>
+        • Add edges between similar rows (cosine similarity > threshold)<br>
+        • Edge weights = similarity values
+      </div>
+    </div>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">9</span>
+      <span class="stage-name">Trust Propagation</span>
+      <div class="stage-desc">
+        • Initialize trust scores for each row using R<br>
+        • Iteratively propagate trust through graph edges<br>
+        • Formula: t(rᵢ) = (1 - ∏(1 - t(rⱼ)×sim(i,j))) × (1-conflict) × t(source)<br>
+        • Converge when max change < 0.001 or 1000 iterations
+      </div>
+    </div>
+
+    <h3 style="margin: 25px 0 10px 0; color: #1a1a1a;">Phase 4: Model Training & Selection</h3>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">10</span>
+      <span class="stage-name">AutoML Trainer</span>
+      <div class="stage-desc">
+        • Compute sample weights: wᵢ = trust_score[i] × R<br>
+        • Train 3 models with trust-weighted samples:<br>
+        &nbsp;&nbsp;→ Random Forest (Classifier/Regressor)<br>
+        &nbsp;&nbsp;→ Logistic/Linear Regression<br>
+        &nbsp;&nbsp;→ XGBoost (Classifier/Regressor)<br>
+        • Use 5-fold cross-validation with sample weights
+      </div>
+    </div>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">11</span>
+      <span class="stage-name">Model Selection</span>
+      <div class="stage-desc">
+        • Classification: Score = Accuracy × R<br>
+        • Regression: Score = (1 - normalized_RMSE) × R<br>
+        • Select model with highest reliability-adjusted score
+      </div>
+    </div>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">12</span>
+      <span class="stage-name">Feedback Refinement</span>
+      <div class="stage-desc">
+        • Compute per-row prediction errors<br>
+        • Refine trust scores: trust[i] ← trust[i] × (1 - error[i])<br>
+        • Re-normalize so max(trust) = 1.0
+      </div>
+    </div>
+
+    <h3 style="margin: 25px 0 10px 0; color: #1a1a1a;">Phase 5: Feature Analysis & Explainability</h3>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">13</span>
+      <span class="stage-name">Feature Trust</span>
+      <div class="stage-desc">
+        • Calculate trust score for each feature<br>
+        • feature_trust[f] = mean(trust_scores for non-missing rows)<br>
+        • Compute confidence score = 1 - variance(trust_scores)
+      </div>
+    </div>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">14</span>
+      <span class="stage-name">Explainability (SHAP)</span>
+      <div class="stage-desc">
+        • Generate SHAP values for best model<br>
+        • Calculate feature importance = mean(|SHAP values|)<br>
+        • Flag features with high importance but low trust<br>
+        • Provide interpretable explanations for predictions
+      </div>
+    </div>
+
+    <h3 style="margin: 25px 0 10px 0; color: #1a1a1a;">Phase 6: Robustness Testing</h3>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">15</span>
+      <span class="stage-name">Noise Simulation</span>
+      <div class="stage-desc">
+        • Add Gaussian noise to numeric features<br>
+        • Retrain models on noisy data with same trust weights<br>
+        • Compare performance: trust-weighted vs baseline<br>
+        • Demonstrate robustness of reliability-aware approach
+      </div>
+    </div>
+
+    <div class="pipeline-stage">
+      <span class="stage-number">16</span>
+      <span class="stage-name">Baseline Comparison</span>
+      <div class="stage-desc">
+        • Train models WITHOUT trust weighting<br>
+        • Compare accuracy/RMSE: reliability-aware vs standard<br>
+        • Show performance improvement from trust-based training
+      </div>
+    </div>
+
+  </div>
+
+  <div class="flow-arrow">⬇️</div>
+
+  <!-- LAYER 3: DATA STORAGE -->
+  <div class="layer">
+    <div class="layer-title">LAYER 3: STATE MANAGEMENT (In-Memory Storage)</div>
+    <div class="components">
+      <div class="component">
+        <div class="component-name">📋 Raw Data</div>
+        <div class="component-desc">
+          • raw_df: Original uploaded DataFrame<br>
+          • column_types: Type classification<br>
+          • target_column: Identified target
+        </div>
+      </div>
+      <div class="component">
+        <div class="component-name">🔧 Processed Data</div>
+        <div class="component-desc">
+          • processed_df: Cleaned & transformed data<br>
+          • preprocessor_pipeline: sklearn Pipeline<br>
+          • sample_weights: Per-row weights
+        </div>
+      </div>
+      <div class="component">
+        <div class="component-name">📊 Reliability Scores</div>
+        <div class="component-desc">
+          • S, T, Sim, C, D: Five component scores<br>
+          • R: Composite reliability score<br>
+          • fusion_weights: Learned weights [w₁...w₅]
+        </div>
+      </div>
+      <div class="component">
+        <div class="component-name">🔗 Trust Data</div>
+        <div class="component-desc">
+          • trust_scores: Per-row trust values<br>
+          • reliability_graph: NetworkX graph<br>
+          • feature_trust: Per-feature trust<br>
+          • confidence_score: Overall confidence
+        </div>
+      </div>
+      <div class="component">
+        <div class="component-name">🤖 Models</div>
+        <div class="component-desc">
+          • trained_models: Dict of 3 trained models<br>
+          • model_scores: Performance metrics<br>
+          • best_model_name: Selected model<br>
+          • task_type: classification/regression
+        </div>
+      </div>
+      <div class="component">
+        <div class="component-name">💡 Explainability</div>
+        <div class="component-desc">
+          • shap_values: SHAP explanations<br>
+          • shap_feature_importance: Feature rankings<br>
+          • high_importance_low_trust_features: Flagged features
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY FORMULAS -->
+  <div class="layer" style="background: #fff8e1;">
+    <div class="layer-title" style="background: #f57c00;">KEY FORMULAS & METRICS</div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+      <div style="border: 2px solid #f57c00; padding: 15px; border-radius: 5px; background: white;">
+        <h4 style="margin-bottom: 10px;">Reliability Scores</h4>
+        <div style="font-family: monospace; font-size: 0.9rem; line-height: 1.8;">
+          S = 1 - (0.4×missing + 0.3×dup + 0.3×const)<br>
+          T = 1 - (0.6×outlier + 0.4×low_var)<br>
+          Sim = mean(cosine_similarity)<br>
+          C = conflicts / total_pairs<br>
+          D = mean(cluster_trust)<br>
+          <strong>R = w₁S + w₂T + w₃Sim + w₄(1-C) + w₅D</strong>
+        </div>
+      </div>
+      
+      <div style="border: 2px solid #f57c00; padding: 15px; border-radius: 5px; background: white;">
+        <h4 style="margin-bottom: 10px;">Trust & Model Selection</h4>
+        <div style="font-family: monospace; font-size: 0.9rem; line-height: 1.8;">
+          trust[i] = propagated via graph<br>
+          sample_weight[i] = trust[i] × R<br>
+          <strong>Classification:</strong> Score = Accuracy × R<br>
+          <strong>Regression:</strong> Score = (1 - RMSE) × R<br>
+          feature_trust[f] = mean(trust[non-missing])<br>
+          confidence = 1 - variance(trust)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA FLOW SUMMARY -->
+  <div class="layer" style="background: #e8f5e9;">
+    <div class="layer-title" style="background: #2e7d32;">END-TO-END DATA FLOW</div>
+    <div style="padding: 20px; font-size: 1rem; line-height: 2;">
+      <strong>1. Input:</strong> User uploads CSV → Validated & preprocessed<br>
+      <strong>2. Scoring:</strong> Five dimensions analyzed → Fused into Reliability Score (R)<br>
+      <strong>3. Graph:</strong> Row similarity graph built → Trust propagated through network<br>
+      <strong>4. Training:</strong> Models trained with trust-weighted samples → Best model selected<br>
+      <strong>5. Refinement:</strong> Trust refined using prediction errors → Feature trust computed<br>
+      <strong>6. Explanation:</strong> SHAP values generated → Suspicious features flagged<br>
+      <strong>7. Output:</strong> Dashboard displays results → Model & report downloadable
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-title">📖 System Benefits</div>
+    <ul style="margin-left: 20px; line-height: 1.8;">
+      <li><strong>Data Quality Assessment:</strong> Quantifies trustworthiness across 5 dimensions</li>
+      <li><strong>Intelligent Weighting:</strong> Unreliable rows contribute less to model training</li>
+      <li><strong>Trust Propagation:</strong> Similar rows share trust through graph structure</li>
+      <li><strong>Automated ML:</strong> Trains and compares 3 model families automatically</li>
+      <li><strong>Explainability:</strong> SHAP values reveal which features drive predictions</li>
+      <li><strong>Robustness:</strong> Noise simulation validates model stability</li>
+      <li><strong>Transparency:</strong> Full visibility into reliability scores and trust metrics</li>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.whl
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Pytest / testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Streamlit
+.streamlit/
+
+# Large datasets (keep sample datasets, ignore generated ones)
+datasets/large_dataset_10000.csv
+datasets/large_dataset_1200.csv
+datasets/large_dataset_12000_extreme.csv
+datasets/large_dataset_15000_noisy.csv
+datasets/large_dataset_20000_clean.csv
+datasets/large_dataset_500.csv
+
+# Model artifacts
+*.joblib
+*.pkl
+*.h5
+*.pt
+*.pth
+
+# Logs and temp files
+*.log
+*.tmp
+test_output.log
+
+# Report LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.pdf
+
+# Kiro
+.kiro/

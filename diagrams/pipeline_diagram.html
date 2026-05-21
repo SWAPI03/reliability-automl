@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reliability-Aware AutoML — All Report Figures</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #ffffff;
+  font-family: 'Times New Roman', Times, serif;
+  color: #000000;
+  padding: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+h1 {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 6px;
+  letter-spacing: 0.04em;
+}
+.subtitle {
+  text-align: center;
+  font-size: 0.82rem;
+  color: #444;
+  margin-bottom: 36px;
+}
+.figure {
+  border: 1.5px solid #000;
+  border-radius: 3px;
+  padding: 22px 26px 16px 26px;
+  margin-bottom: 44px;
+  page-break-inside: avoid;
+}
+.fig-title {
+  text-align: center;
+  font-size: 0.92rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-bottom: 1px solid #bbb;
+  padding-bottom: 7px;
+}
+.fig-caption {
+  text-align: center;
+  font-size: 0.80rem;
+  margin-top: 12px;
+  font-style: italic;
+  color: #222;
+}
+/* ── Layout helpers ── */
+.row { display:flex; align-items:center; justify-content:center; flex-wrap:nowrap; }
+.col { display:flex; flex-direction:column; align-items:center; }
+/* ── Boxes ── */
+.box {
+  border: 1.5px solid #000;
+  border-radius: 3px;
+  padding: 7px 12px;
+  text-align: center;
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.35;
+  background: #fff;
+  min-width: 95px;
+}
+.box sub { font-size: 0.62rem; font-weight: 400; display: block; margin-top: 2px; }
+.box-wide  { min-width: 155px; }
+.box-xl    { min-width: 195px; }
+.box-sm    { min-width: 75px; font-size: 0.70rem; padding: 5px 9px; }
+.box-dark  { background: #1a1a1a; color: #fff; }
+.box-mid   { background: #555; color: #fff; }
+.box-gray  { background: #ccc; color: #000; }
+.box-light { background: #eee; color: #000; }
+.box-stripe { background: repeating-linear-gradient(45deg,#eee,#eee 4px,#fff 4px,#fff 8px); }
+/* ── Arrows ── */
+.arr  { width: 32px; text-align: center; font-size: 1.05rem; flex-shrink: 0; }
+.arr-d { height: 26px; display:flex; align-items:center; justify-content:center; font-size: 1.05rem; }
+.arr-sm { height: 16px; display:flex; align-items:center; justify-content:center; font-size: 0.95rem; }
+/* ── ER entity ── */
+.er-ent { border: 2px solid #000; min-width: 155px; font-size: 0.72rem; }
+.er-head { background: #1a1a1a; color: #fff; font-weight: 700; padding: 5px 8px;
+           text-align: center; font-size: 0.75rem; letter-spacing: 0.03em; }
+.er-body { padding: 5px 8px; }
+.er-row  { padding: 2px 0; font-size: 0.68rem; border-bottom: 1px dotted #bbb;
+           display: flex; justify-content: space-between; gap: 6px; }
+.er-row:last-child { border-bottom: none; }
+.er-pk   { font-weight: 700; }
+.er-type { color: #555; font-style: italic; font-size: 0.60rem; }
+/* ── Bar chart ── */
+.bar-row { display:flex; align-items:center; margin-bottom:5px; gap:7px; }
+.bar-lbl { width:150px; font-size:0.70rem; text-align:right; flex-shrink:0; }
+.bar-trk { flex:1; height:16px; background:#f0f0f0; border:1px solid #bbb; }
+.bar-fill { height:100%; background:#333; }
+.bar-val  { width:38px; font-size:0.68rem; flex-shrink:0; }
+</style>
+</head>
+<body>
+
+<h1>Reliability-Aware AutoML — All Report Figures</h1>
+<p class="subtitle">Black-and-white diagrams · Matches report.tex exactly · No colour used</p>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     FIG 1.1 — High-Level Pipeline Overview
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="figure">
+  <div class="fig-title">Figure 1.1 — High-Level Pipeline Overview</div>
+  <div style="overflow-x:auto;">
+  <div style="display:flex;flex-direction:column;align-items:center;min-width:680px;">
+    <!-- Row 1 -->
+    <div class="row" style="gap:0;">
+      <div class="box box-dark box-wide">CSV Upload<sub>Streamlit file_uploader</sub></div>
+      <div class="arr">&#8594;</div>
+      <div class="box box-wide">Validation<sub>Parse · Type detect · Target ID</sub></div>
+      <div class="arr">&#8594;</div>
+      <div class="box box-wide">Preprocessing<sub>Impute · Encode · Scale</sub></div>
+      <div class="arr">&#8594;</div>
+      <div class="box box-gray box-wide">5-Dim Scoring<sub>S · T · Sim · C · D</sub></div>
+    </div>
+    <!-- Down right -->
+    <div style="display:flex;width:100%;justify-content:flex-end;padding-right:0;">
+      <div style="width:120px;text-align:center;font-size:1.05rem;">&#8595;</div>
+    </div>
+    <!-- Row 2 reversed -->
+    <div class="row" style="gap:0;flex-direction:row-reverse;">
+      <div class="box box-gray box-wide">Reliability Fusion<sub>R = w₁S+w₂T+w₃Sim+w₄(1−C)+w₅D</sub></div>
+      <div class="arr" style="transform:rotate(180deg);">&#8594;</div>
+      <div class="box box-wide">Graph Construction<sub>Row-similarity graph G</sub></div>
+      <div class="arr" style="transform:rotate(180deg);">&#8594;</div>
+      <div class="box box-wide">Trust Propagation<sub>Iterative belief propagation</sub></div>
+    </div>
+    <!-- Down left -->
+    <div style="display:flex;width:100%;justify-content:flex-start;">
+      <div style="width:120px;text-align:center;font-size:1.05rem;">&#8595;</div>
+    </div>
+    <!-- Row 3 -->
+    <div class="row" style="gap:0;">
+      <div class="box box-gray box-wide">AutoML Training<sub>RF · LR · XGBoost (trust-weighted)</sub></div>
+      <div class="arr">&#8594;</div>
+      <div class="box box-wide">Model Selection<sub>Score = Accuracy × R</sub></div>
+      <div class="arr">&#8594;</div>
+      <div class="box box-wide">Explainability (SHAP)<sub>Feature trust · Flagging</sub></div>
+      <div class="arr">&#8594;</div>
+      <div class="box box-dark">Dashboard<sub>Output</sub></div>
+    </div>
+  </div>
+  </div>
+  <p class="fig-caption">Figure 1.1: High-level pipeline overview: from CSV upload to trust-weighted model output.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     FIG 1.2 — Gantt Chart
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="figure">
+  <div class="fig-title">Figure 1.2 — Project Development Timeline (Gantt Chart)</div>
+  <svg width="960" height="330" style="display:block;margin:0 auto;font-family:'Times New Roman',Times,serif;">
+    <!-- Header row -->
+    <rect x="200" y="10" width="740" height="22" fill="#1a1a1a"/>
+    <text x="100" y="25" text-anchor="middle" font-size="11" font-weight="bold" fill="black">Phase / Activity</text>
+    <text x="570" y="25" text-anchor="middle" font-size="11" font-weight="bold" fill="white">Week</text>
+    <!-- Week numbers -->
+    <g font-size="9" fill="white" text-anchor="middle">
+      <text x="257" y="25">1</text><text x="314" y="25">2</text><text x="371" y="25">3</text>
+      <text x="428" y="25">4</text><text x="485" y="25">5</text><text x="542" y="25">6</text>
+      <text x="599" y="25">7</text><text x="656" y="25">8</text><text x="713" y="25">9</text>
+      <text x="770" y="25">10</text><text x="827" y="25">11</text><text x="884" y="25">12</text>
+      <text x="941" y="25">13</text>
+    </g>
+    <!-- Vertical grid lines -->
+    <g stroke="#ddd" stroke-width="0.5">
+      <line x1="257" y1="32" x2="257" y2="310"/>
+      <line x1="314" y1="32" x2="314" y2="310"/>
+      <line x1="371" y1="32" x2="371" y2="310"/>
+      <line x1="428" y1="32" x2="428" y2="310"/>
+      <line x1="485" y1="32" x2="485" y2="310"/>
+      <line x1="542" y1="32" x2="542" y2="310"/>
+      <line x1="599" y1="32" x2="599" y2="310"/>
+      <line x1="656" y1="32" x2="656" y2="310"/>
+      <line x1="713" y1="32" x2="713" y2="310"/>
+      <line x1="770" y1="32" x2="770" y2="310"/>
+      <line x1="827" y1="32" x2="827" y2="310"/>
+      <line x1="884" y1="32" x2="884" y2="310"/>
+      <line x1="941" y1="32" x2="941" y2="310"/>
+    </g>
+    <!--
+      Row height=26, start y=32
+      Week width=57, week 1 center=257, bar start = 200 + (start_week-1)*57
+      bar width = duration_weeks * 57
+    -->
+    <!-- P1: Lit Review Wk1-2 -->
+    <rect x="10" y="34" width="190" height="20" fill="#f5f5f5" stroke="#ccc" stroke-width="0.5"/>
+    <text x="14" y="48" font-size="9.5">P1: Literature Review</text>
+    <rect x="200" y="36" width="114" height="16" fill="#1a1a1a" stroke="black" stroke-width="0.5"/>
+    <!-- P2: Preprocessing Wk3 -->
+    <rect x="10" y="60" width="190" height="20" fill="white" stroke="#ccc" stroke-width="0.5"/>
+    <text x="14" y="74" font-size="9.5">P2: Preprocessing Module</text>
+    <rect x="314" y="62" width="57" height="16" fill="#555" stroke="black" stroke-width="0.5"/>
+    <!-- P3: Scoring Wk4-5 -->
+    <rect x="10" y="86" width="190" height="20" fill="#f5f5f5" stroke="#ccc" stroke-width="0.5"/>
+    <text x="14" y="100" font-size="9.5">P3: Reliability Scoring</text>
+    <rect x="371" y="88" width="114" height="16" fill="#1a1a1a" stroke="black" stroke-width="0.5"/>
+    <!-- P4: Fusion Wk6 -->
+    <rect x="10" y="112" width="190" height="20" fill="white" stroke="#ccc" stroke-width="0.5"/>
+    <text x="14" y="126" font-size="9.5">P4: Reliability Fusion</text>
+    <rect x="485" y="114" width="57" height="16" fill="#555" stroke="black" stroke-width="0.5"/>
+    <!-- P5: Graph/Prop Wk7-8 -->
+    <rect x="10" y="138" width="190" height="20" fill="#f5f5f5" stroke="#ccc" stroke-width="0.5"/>
+    <text x="14" y="152" font-size="9.5">P5: Graph / Propagation</text>
+    <rect x="542" y="140" width="114" height="16" fill="#1a1a1a" stroke="black" stroke-width="0.5"/>
+    <!-- P6: AutoML Wk9 -->
+    <rect x="10" y="164" width="190" height="20" fill="white" stroke="#ccc" stroke-width="0.5"/>
+    <text x="14" y="178" font-size="9.5">P6: AutoML Training</text>
+    <rect x="656" y="166" width="57" height="16" fill="#555" stroke="black" stroke-width="0.5"/>
+    <!-- P7: Explainability Wk10 -->
+    <rect x="10" y="190" width="190" height="20" fill="#f5f5f5" stroke="#ccc" stroke-width="0.5"/>
+    <text x="14" y="204" font-size="9.5">P7: Explainability</text>
+    <rect x="713" y="192" width="57" height="16" fill="#1a1a1a" stroke="black" stroke-width="0.5"/>
+    <!-- P8: Noise Sim Wk11 -->
+    <rect x="10" y="216" width="190" height="20" fill="white" stroke="#ccc" stroke-width="0.5"/>
+    <text x="14" y="230" font-size="9.5">P8: Noise Simulation</text>
+    <rect x="770" y="218" width="57" height="16" fill="#555" stroke="black" stroke-width="0.5"/>
+    <!-- P9: UI Wk12 -->
+    <rect x="10" y="242" width="190" height="20" fill="#f5f5f5" stroke="#ccc" stroke-width="0.5"/>
+    <text x="14" y="256" font-size="9.5">P9: UI / Dashboard</text>
+    <rect x="827" y="244" width="57" height="16" fill="#1a1a1a" stroke="black" stroke-width="0.5"/>
+    <!-- P10: Testing Wk12-13 -->
+    <rect x="10" y="268" width="190" height="20" fill="white" stroke="#ccc" stroke-width="0.5"/>
+    <text x="14" y="282" font-size="9.5">P10: Testing / Report</text>
+    <rect x="827" y="270" width="114" height="16" fill="#555" stroke="black" stroke-width="0.5"/>
+    <!-- Border -->
+    <rect x="10" y="34" width="930" height="254" fill="none" stroke="black" stroke-width="1.5"/>
+    <line x1="200" y1="34" x2="200" y2="288" stroke="black" stroke-width="1.5"/>
+    <!-- Legend -->
+    <rect x="200" y="300" width="18" height="10" fill="#1a1a1a" stroke="black" stroke-width="0.5"/>
+    <text x="222" y="309" font-size="9">Primary phase</text>
+    <rect x="320" y="300" width="18" height="10" fill="#555" stroke="black" stroke-width="0.5"/>
+    <text x="342" y="309" font-size="9">Secondary phase</text>
+    <text x="200" y="325" font-size="8.5" fill="#555" font-style="italic">All 10 phases completed on schedule. Total duration: 13 weeks.</text>
+  </svg>
+  <p class="fig-caption">Figure 1.2: Gantt chart showing the project development phases across 13 weeks.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     FIG 3.1 — Use Case Diagram
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="figure">
+  <div class="fig-title">Figure 3.1 — Use Case Diagram</div>
+  <svg width="860" height="400" style="display:block;margin:0 auto;font-family:'Times New Roman',Times,serif;">
+    <!-- System boundary -->
+    <rect x="150" y="20" width="680" height="360" fill="white" stroke="black" stroke-width="2" rx="4" stroke-dasharray="6,3"/>
+    <text x="490" y="14" text-anchor="middle" font-size="12" font-weight="bold">&#10216;System&#10217; Reliability-Aware AutoML</text>
+    <!-- Actor -->
+    <circle cx="70" cy="80" r="16" fill="white" stroke="black" stroke-width="1.5"/>
+    <line x1="70" y1="96" x2="70" y2="145" stroke="black" stroke-width="1.5"/>
+    <line x1="42" y1="118" x2="98" y2="118" stroke="black" stroke-width="1.5"/>
+    <line x1="70" y1="145" x2="48" y2="178" stroke="black" stroke-width="1.5"/>
+    <line x1="70" y1="145" x2="92" y2="178" stroke="black" stroke-width="1.5"/>
+    <text x="70" y="198" text-anchor="middle" font-size="12" font-weight="bold">User</text>
+    <!-- Use cases -->
+    <ellipse cx="450" cy="65"  rx="115" ry="26" fill="white" stroke="black" stroke-width="1.5"/>
+    <text x="450" y="62" text-anchor="middle" font-size="11">Upload CSV Dataset</text>
+    <text x="450" y="75" text-anchor="middle" font-size="9" font-style="italic" fill="#555">(file_uploader)</text>
+    <ellipse cx="450" cy="140" rx="115" ry="26" fill="white" stroke="black" stroke-width="1.5"/>
+    <text x="450" y="137" text-anchor="middle" font-size="11">View Data Overview</text>
+    <text x="450" y="150" text-anchor="middle" font-size="9" font-style="italic" fill="#555">(preview, types, target)</text>
+    <ellipse cx="450" cy="215" rx="115" ry="26" fill="white" stroke="black" stroke-width="1.5"/>
+    <text x="450" y="212" text-anchor="middle" font-size="11">Inspect Reliability Scores</text>
+    <text x="450" y="225" text-anchor="middle" font-size="9" font-style="italic" fill="#555">(S, T, Sim, C, D, R)</text>
+    <ellipse cx="450" cy="290" rx="115" ry="26" fill="white" stroke="black" stroke-width="1.5"/>
+    <text x="450" y="287" text-anchor="middle" font-size="11">View Model Performance</text>
+    <text x="450" y="300" text-anchor="middle" font-size="9" font-style="italic" fill="#555">(Before vs After)</text>
+    <ellipse cx="450" cy="360" rx="115" ry="26" fill="#1a1a1a" stroke="black" stroke-width="1.5"/>
+    <text x="450" y="357" text-anchor="middle" font-size="11" fill="white">Download Model / Report</text>
+    <text x="450" y="370" text-anchor="middle" font-size="9" font-style="italic" fill="#ccc">(.joblib + .json)</text>
+    <!-- Association lines -->
+    <line x1="86" y1="110" x2="335" y2="65"  stroke="black" stroke-width="1"/>
+    <line x1="86" y1="120" x2="335" y2="140" stroke="black" stroke-width="1"/>
+    <line x1="86" y1="130" x2="335" y2="215" stroke="black" stroke-width="1"/>
+    <line x1="86" y1="140" x2="335" y2="290" stroke="black" stroke-width="1"/>
+    <line x1="86" y1="150" x2="335" y2="360" stroke="black" stroke-width="1"/>
+    <!-- Include: Upload includes View Data Overview -->
+    <line x1="565" y1="65" x2="565" y2="140" stroke="black" stroke-width="1" stroke-dasharray="4,3"/>
+    <polygon points="565,140 561,130 569,130" fill="black"/>
+    <text x="570" y="105" font-size="8" font-style="italic" fill="#555">&#171;include&#187;</text>
+    <!-- Include: Inspect includes View Performance -->
+    <line x1="565" y1="215" x2="565" y2="290" stroke="black" stroke-width="1" stroke-dasharray="4,3"/>
+    <polygon points="565,290 561,280 569,280" fill="black"/>
+    <text x="570" y="255" font-size="8" font-style="italic" fill="#555">&#171;include&#187;</text>
+  </svg>
+  <p class="fig-caption">Figure 3.1: Use case diagram: User actor interacting with the Reliability-Aware AutoML system.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     FIG 4.1 — Three-Tier Architecture
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="figure">
+  <div class="fig-title">Figure 4.1 — Three-Tier System Architecture</div>
+  <div style="display:flex;gap:10px;align-items:stretch;">
+    <!-- Tier 1 -->
+    <div style="flex:1;border:2px solid #000;border-radius:3px;padding:10px 8px;">
+      <div style="text-align:center;font-weight:700;font-size:0.78rem;background:#1a1a1a;color:#fff;margin:-10px -8px 8px -8px;padding:5px 8px;">TIER 1: UI (Streamlit)</div>
+      <div class="col" style="gap:5px;">
+        <div class="box box-sm box-gray">File Uploader</div>
+        <div class="box box-sm box-gray">Section Radio Nav</div>
+        <div class="box box-sm box-gray">Charts &amp; Tables</div>
+        <div class="box box-sm box-gray">Download Buttons</div>
+        <div class="box box-sm box-gray">Progress Bar</div>
+      </div>
+    </div>
+    <!-- Arrow -->
+    <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;width:55px;flex-shrink:0;">
+      <div style="font-size:0.60rem;color:#444;">upload</div>
+      <div style="font-size:1.05rem;">&#8594;</div>
+      <div style="font-size:1.05rem;">&#8592;</div>
+      <div style="font-size:0.60rem;color:#444;">dashboard</div>
+    </div>
+    <!-- Tier 2 -->
+    <div style="flex:2;border:2px solid #000;border-radius:3px;padding:10px 8px;">
+      <div style="text-align:center;font-weight:700;font-size:0.78rem;background:#555;color:#fff;margin:-10px -8px 8px -8px;padding:5px 8px;">TIER 2: Pipeline Engine (16 Stages)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+        <div class="box box-sm">validator</div>
+        <div class="box box-sm">preprocessor</div>
+        <div class="box box-sm">structural_score</div>
+        <div class="box box-sm">statistical_score</div>
+        <div class="box box-sm">pattern_analysis</div>
+        <div class="box box-sm">deduction_score</div>
+        <div class="box box-sm">reliability_fusion</div>
+        <div class="box box-sm">reliability_graph</div>
+        <div class="box box-sm">trust_propagation</div>
+        <div class="box box-sm">automl_trainer</div>
+        <div class="box box-sm">model_selection</div>
+        <div class="box box-sm">feedback_refinement</div>
+        <div class="box box-sm">feature_trust</div>
+        <div class="box box-sm">noise_simulation</div>
+        <div class="box box-sm">baseline_comparison</div>
+        <div class="box box-sm">explainability</div>
+      </div>
+    </div>
+    <!-- Arrow -->
+    <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;width:55px;flex-shrink:0;">
+      <div style="font-size:0.60rem;color:#444;">read/write</div>
+      <div style="font-size:1.05rem;">&#8594;</div>
+      <div style="font-size:1.05rem;">&#8592;</div>
+      <div style="font-size:0.60rem;color:#444;">render</div>
+    </div>
+    <!-- Tier 3 -->
+    <div style="flex:1;border:2px solid #000;border-radius:3px;padding:10px 8px;">
+      <div style="text-align:center;font-weight:700;font-size:0.78rem;background:#1a1a1a;color:#fff;margin:-10px -8px 8px -8px;padding:5px 8px;">TIER 3: State Store</div>
+      <div class="col" style="gap:5px;">
+        <div class="box box-sm box-stripe">raw_df</div>
+        <div class="box box-sm box-stripe">processed_df</div>
+        <div class="box box-sm box-stripe">reliability_score</div>
+        <div class="box box-sm box-stripe">trust_scores</div>
+        <div class="box box-sm box-stripe">trained_models</div>
+        <div class="box box-sm box-stripe">shap_values</div>
+      </div>
+    </div>
+  </div>
+  <p class="fig-caption">Figure 4.1: Three-tier architecture: Streamlit UI, Pipeline Engine (16 stages), and in-memory State Store.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     FIG 4.2 — Validation Pipeline
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="figure">
+  <div class="fig-title">Figure 4.2 — Validation Pipeline</div>
+  <div class="col" style="gap:0;align-items:center;">
+    <div class="box box-dark" style="border-radius:18px;min-width:155px;">User Uploads CSV</div>
+    <div class="arr-d">&#8595;</div>
+    <div class="box box-wide">Stage 1: pd.read_csv()<sub>Parse file into DataFrame</sub></div>
+    <div class="arr-d">&#8595;</div>
+    <!-- Decision -->
+    <div style="position:relative;width:190px;height:66px;display:flex;align-items:center;justify-content:center;">
+      <svg width="190" height="66" style="position:absolute;top:0;left:0;">
+        <polygon points="95,4 186,33 95,62 4,33" fill="white" stroke="black" stroke-width="1.5"/>
+        <text x="95" y="29" text-anchor="middle" font-size="11" font-weight="bold" font-family="Times New Roman">Parse</text>
+        <text x="95" y="44" text-anchor="middle" font-size="11" font-weight="bold" font-family="Times New Roman">Error?</text>
+      </svg>
+    </div>
+    <!-- Branches -->
+    <div style="display:flex;width:400px;justify-content:space-between;align-items:flex-start;">
+      <div class="col" style="align-items:center;width:155px;">
+        <div style="font-size:0.68rem;font-weight:700;margin-bottom:3px;">Yes</div>
+        <div class="arr-sm">&#8595;</div>
+        <div class="box box-mid box-sm" style="color:#fff;">Raise Error<sub>Halt pipeline</sub></div>
+      </div>
+      <div class="col" style="align-items:center;width:155px;">
+        <div style="font-size:0.68rem;font-weight:700;margin-bottom:3px;">No</div>
+        <div class="arr-sm">&#8595;</div>
+        <div style="position:relative;width:150px;height:58px;display:flex;align-items:center;justify-content:center;">
+          <svg width="150" height="58" style="position:absolute;top:0;left:0;">
+            <polygon points="75,4 146,29 75,54 4,29" fill="white" stroke="black" stroke-width="1.5"/>
+            <text x="75" y="25" text-anchor="middle" font-size="10" font-weight="bold" font-family="Times New Roman">&lt; 10</text>
+            <text x="75" y="38" text-anchor="middle" font-size="10" font-weight="bold" font-family="Times New Roman">rows?</text>
+          </svg>
+        </div>
+        <div style="display:flex;width:260px;justify-content:space-between;align-items:flex-start;margin-left:55px;">
+          <div class="col" style="align-items:center;width:110px;">
+            <div style="font-size:0.68rem;font-weight:700;margin-bottom:3px;">Yes</div>
+            <div class="arr-sm">&#8595;</div>
+            <div class="box box-gray box-sm">Issue Warning<sub>(non-fatal)</sub></div>
+          </div>
+          <div class="col" style="align-items:center;width:110px;">
+            <div style="font-size:0.68rem;font-weight:700;margin-bottom:3px;">No</div>
+            <div class="arr-sm">&#8595;</div>
+            <div class="box box-sm" style="min-width:100px;">Continue</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="arr-d" style="margin-top:6px;">&#8595;</div>
+    <div class="box box-wide">Detect Column Types<sub>numeric / categorical / datetime</sub></div>
+    <div class="arr-d">&#8595;</div>
+    <div class="box box-wide">Identify Target Column<sub>keyword heuristic or last-column fallback</sub></div>
+    <div class="arr-d">&#8595;</div>
+    <div class="box box-dark box-xl">State: raw_df, column_types, target_column</div>
+  </div>
+  <p class="fig-caption">Figure 4.2: Validation pipeline: CSV parsing, row count check, column type detection, and target identification.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     FIG 4.3 — Five-Dimensional Reliability Scoring
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="figure">
+  <div class="fig-title">Figure 4.3 — Five-Dimensional Reliability Scoring and Fusion</div>
+  <div class="col" style="align-items:center;gap:0;">
+    <div class="box box-dark box-xl">Preprocessed DataFrame</div>
+    <!-- Fan-out arrows -->
+    <div style="display:flex;width:800px;justify-content:space-around;margin-top:0;">
+      <div style="text-align:center;font-size:1rem;">&#8595;</div>
+      <div style="text-align:center;font-size:1rem;">&#8595;</div>
+      <div style="text-align:center;font-size:1rem;">&#8595;</div>
+      <div style="text-align:center;font-size:1rem;">&#8595;</div>
+      <div style="text-align:center;font-size:1rem;">&#8595;</div>
+    </div>
+    <!-- Five score boxes -->
+    <div style="display:flex;gap:6px;width:800px;justify-content:space-around;">
+      <div class="col" style="align-items:center;gap:3px;width:144px;">
+        <div class="box box-dark" style="width:100%;font-size:0.70rem;">Structural Score S</div>
+        <div style="font-size:0.60rem;text-align:center;border:1px dashed #999;padding:3px;width:100%;line-height:1.4;">missing ratio<br>duplicate ratio<br>constant ratio</div>
+        <div style="font-size:0.60rem;font-style:italic;text-align:center;">S = 1−(0.4m+0.3d+0.3c)</div>
+      </div>
+      <div class="col" style="align-items:center;gap:3px;width:144px;">
+        <div class="box box-mid" style="width:100%;font-size:0.70rem;color:#fff;">Statistical Score T</div>
+        <div style="font-size:0.60rem;text-align:center;border:1px dashed #999;padding:3px;width:100%;line-height:1.4;">outlier ratio<br>(Z-score / IsoForest)<br>low-variance ratio</div>
+        <div style="font-size:0.60rem;font-style:italic;text-align:center;">T = 1−(0.6o+0.4v)</div>
+      </div>
+      <div class="col" style="align-items:center;gap:3px;width:144px;">
+        <div class="box box-gray" style="width:100%;font-size:0.70rem;">Similarity Score Sim</div>
+        <div style="font-size:0.60rem;text-align:center;border:1px dashed #999;padding:3px;width:100%;line-height:1.4;">pairwise cosine<br>similarity<br>mean over all pairs</div>
+        <div style="font-size:0.60rem;font-style:italic;text-align:center;">Sim = mean(cos(xᵢ,xⱼ))</div>
+      </div>
+      <div class="col" style="align-items:center;gap:3px;width:144px;">
+        <div class="box box-stripe" style="width:100%;font-size:0.70rem;">Conflict Score C</div>
+        <div style="font-size:0.60rem;text-align:center;border:1px dashed #999;padding:3px;width:100%;line-height:1.4;">identical features<br>different labels<br>conflict ratio</div>
+        <div style="font-size:0.60rem;font-style:italic;text-align:center;">C = conflicts/pairs</div>
+      </div>
+      <div class="col" style="align-items:center;gap:3px;width:144px;">
+        <div class="box box-dark" style="width:100%;font-size:0.70rem;">Deduction Score D</div>
+        <div style="font-size:0.60rem;text-align:center;border:1px dashed #999;padding:3px;width:100%;line-height:1.4;">KMeans clusters<br>pseudo-source trust<br>mean cluster trust</div>
+        <div style="font-size:0.60rem;font-style:italic;text-align:center;">D = mean(trust(c(i)))</div>
+      </div>
+    </div>
+    <!-- Fan-in arrows -->
+    <div style="display:flex;width:800px;justify-content:space-around;margin-top:3px;">
+      <div style="text-align:center;font-size:1rem;">&#8595;</div>
+      <div style="text-align:center;font-size:1rem;">&#8595;</div>
+      <div style="text-align:center;font-size:1rem;">&#8595;</div>
+      <div style="text-align:center;font-size:1rem;">&#8595;</div>
+      <div style="text-align:center;font-size:1rem;">&#8595;</div>
+    </div>
+    <!-- Fusion box -->
+    <div class="box box-dark" style="min-width:500px;font-size:0.80rem;padding:10px 18px;">
+      Reliability Fusion<br>
+      <span style="font-size:0.68rem;font-weight:400;font-style:italic;">R = w₁S + w₂T + w₃Sim + w₄(1−C) + w₅D</span><br>
+      <span style="font-size:0.62rem;font-weight:400;">Dynamic variance+entropy blended weights &nbsp;|&nbsp; R ∈ [0,1]</span>
+    </div>
+  </div>
+  <p class="fig-caption">Figure 4.3: Five-dimensional reliability scoring and fusion into the composite score R.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     FIG 4.4 — Row-Similarity Graph Construction
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="figure">
+  <div class="fig-title">Figure 4.4 — Row-Similarity Graph Construction</div>
+  <div class="col" style="align-items:center;gap:0;">
+    <div class="box box-dark box-xl">Processed DataFrame (n rows)</div>
+    <div class="arr-d">&#8595;</div>
+    <div class="box box-wide">Compute Pairwise Cosine Similarity Matrix<sub>simᵢⱼ = cos(xᵢ, xⱼ) for all i ≠ j</sub></div>
+    <div class="arr-d">&#8595;</div>
+    <!-- Decision -->
+    <div style="position:relative;width:190px;height:66px;display:flex;align-items:center;justify-content:center;">
+      <svg width="190" height="66" style="position:absolute;top:0;left:0;">
+        <polygon points="95,4 186,33 95,62 4,33" fill="white" stroke="black" stroke-width="1.5"/>
+        <text x="95" y="27" text-anchor="middle" font-size="11" font-weight="bold" font-family="Times New Roman">simᵢⱼ ≥ θ?</text>
+        <text x="95" y="42" text-anchor="middle" font-size="10" font-family="Times New Roman">(default θ = 0.5)</text>
+      </svg>
+    </div>
+    <!-- Branches -->
+    <div style="display:flex;width:480px;justify-content:space-between;align-items:flex-start;">
+      <div class="col" style="align-items:center;width:195px;">
+        <div style="font-size:0.68rem;font-weight:700;margin-bottom:3px;">Yes</div>
+        <div class="arr-sm">&#8595;</div>
+        <div class="box box-dark" style="width:175px;font-size:0.70rem;">Add Edge (i, j)<sub>weight = simᵢⱼ</sub></div>
+      </div>
+      <div class="col" style="align-items:center;width:195px;">
+        <div style="font-size:0.68rem;font-weight:700;margin-bottom:3px;">No</div>
+        <div class="arr-sm">&#8595;</div>
+        <div class="box box-gray" style="width:175px;font-size:0.70rem;">No Edge<sub>(rows are dissimilar)</sub></div>
+      </div>
+    </div>
+    <div class="arr-d" style="margin-top:6px;">&#8595;</div>
+    <div class="box box-dark box-xl">Graph G: nodes = rows, edges = similar pairs<sub>Edge weight = cosine similarity value</sub></div>
+    <!-- Illustrative graph -->
+    <div style="margin-top:14px;border:1px solid #ccc;padding:10px;width:380px;">
+      <div style="text-align:center;font-size:0.62rem;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;">Illustrative Graph Structure</div>
+      <svg width="340" height="130" style="display:block;margin:0 auto;">
+        <circle cx="55"  cy="65"  r="16" fill="white" stroke="black" stroke-width="1.5"/>
+        <circle cx="130" cy="28"  r="16" fill="#555"  stroke="black" stroke-width="1.5"/>
+        <circle cx="130" cy="102" r="16" fill="white" stroke="black" stroke-width="1.5"/>
+        <circle cx="210" cy="65"  r="16" fill="#555"  stroke="black" stroke-width="1.5"/>
+        <circle cx="285" cy="38"  r="16" fill="white" stroke="black" stroke-width="1.5"/>
+        <circle cx="285" cy="92"  r="16" fill="#ccc"  stroke="black" stroke-width="1.5"/>
+        <line x1="71"  y1="55"  x2="114" y2="38"  stroke="black" stroke-width="2.5"/>
+        <line x1="71"  y1="75"  x2="114" y2="92"  stroke="black" stroke-width="1.5"/>
+        <line x1="146" y1="38"  x2="194" y2="55"  stroke="black" stroke-width="2.5"/>
+        <line x1="146" y1="92"  x2="194" y2="75"  stroke="black" stroke-width="1.5"/>
+        <line x1="226" y1="55"  x2="269" y2="48"  stroke="black" stroke-width="2"/>
+        <line x1="226" y1="75"  x2="269" y2="82"  stroke="black" stroke-width="1"/>
+        <text x="55"  y="69"  text-anchor="middle" font-size="9" font-family="Times New Roman">r₁</text>
+        <text x="130" y="32"  text-anchor="middle" font-size="9" font-family="Times New Roman" fill="white">r₂</text>
+        <text x="130" y="106" text-anchor="middle" font-size="9" font-family="Times New Roman">r₃</text>
+        <text x="210" y="69"  text-anchor="middle" font-size="9" font-family="Times New Roman" fill="white">r₄</text>
+        <text x="285" y="42"  text-anchor="middle" font-size="9" font-family="Times New Roman">r₅</text>
+        <text x="285" y="96"  text-anchor="middle" font-size="9" font-family="Times New Roman">r₆</text>
+        <line x1="15" y1="120" x2="45" y2="120" stroke="black" stroke-width="2.5"/>
+        <text x="50" y="124" font-size="8" font-family="Times New Roman">High similarity</text>
+        <line x1="150" y1="120" x2="180" y2="120" stroke="black" stroke-width="1"/>
+        <text x="185" y="124" font-size="8" font-family="Times New Roman">Low similarity</text>
+        <circle cx="270" cy="120" r="5" fill="#555" stroke="black" stroke-width="1"/>
+        <text x="278" y="124" font-size="8" font-family="Times New Roman">High trust</text>
+      </svg>
+    </div>
+  </div>
+  <p class="fig-caption">Figure 4.4: Row-similarity graph construction based on cosine similarity threshold.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     FIG 4.5 — AutoML Training Pipeline
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="figure">
+  <div class="fig-title">Figure 4.5 — AutoML Training Pipeline</div>
+  <div class="col" style="align-items:center;gap:0;">
+    <div style="display:flex;gap:18px;align-items:center;">
+      <div class="box box-dark" style="min-width:135px;">Per-row trust t<sub>from trust propagation</sub></div>
+      <div style="font-size:0.9rem;">+</div>
+      <div class="box box-dark" style="min-width:135px;">Reliability Score R<sub>dataset-level</sub></div>
+    </div>
+    <div class="arr-d">&#8595;</div>
+    <div class="box box-mid" style="min-width:290px;color:#fff;">Compute Sample Weights<br><span style="font-size:0.66rem;font-style:italic;font-weight:400;">wᵢ = tᵢ · R / Σⱼ tⱼ · R</span></div>
+    <div class="arr-d">&#8595;</div>
+    <!-- Task type decision -->
+    <div style="position:relative;width:190px;height:66px;display:flex;align-items:center;justify-content:center;">
+      <svg width="190" height="66" style="position:absolute;top:0;left:0;">
+        <polygon points="95,4 186,33 95,62 4,33" fill="white" stroke="black" stroke-width="1.5"/>
+        <text x="95" y="29" text-anchor="middle" font-size="11" font-weight="bold" font-family="Times New Roman">Task</text>
+        <text x="95" y="44" text-anchor="middle" font-size="11" font-weight="bold" font-family="Times New Roman">Type?</text>
+      </svg>
+    </div>
+    <!-- Branches -->
+    <div style="display:flex;width:580px;justify-content:space-between;align-items:flex-start;">
+      <div class="col" style="align-items:center;width:250px;">
+        <div style="font-size:0.68rem;font-weight:700;margin-bottom:3px;">Classification</div>
+        <div class="arr-sm">&#8595;</div>
+        <div style="display:flex;gap:5px;">
+          <div class="box box-sm box-dark" style="color:#fff;">Random Forest</div>
+          <div class="box box-sm box-mid" style="color:#fff;">Logistic Reg.</div>
+          <div class="box box-sm box-dark" style="color:#fff;">XGBoost</div>
+        </div>
+      </div>
+      <div class="col" style="align-items:center;width:250px;">
+        <div style="font-size:0.68rem;font-weight:700;margin-bottom:3px;">Regression</div>
+        <div class="arr-sm">&#8595;</div>
+        <div style="display:flex;gap:5px;">
+          <div class="box box-sm box-dark" style="color:#fff;">Random Forest</div>
+          <div class="box box-sm box-mid" style="color:#fff;">Linear Reg.</div>
+          <div class="box box-sm box-dark" style="color:#fff;">XGBoost</div>
+        </div>
+      </div>
+    </div>
+    <div class="arr-d" style="margin-top:6px;">&#8595;</div>
+    <div class="box box-wide">5-Fold Cross-Validation<sub>with per-row sample weights</sub></div>
+    <div class="arr-d">&#8595;</div>
+    <div class="box box-gray" style="min-width:260px;">Compute Accuracy (clf) or RMSE (reg)</div>
+    <div class="arr-d">&#8595;</div>
+    <div class="box box-dark" style="min-width:290px;color:#fff;">Select Best Model<br><span style="font-size:0.66rem;font-style:italic;font-weight:400;">Score = Accuracy × R &nbsp;(clf) &nbsp;|&nbsp; Score = R/RMSE &nbsp;(reg)</span></div>
+    <div class="arr-d">&#8595;</div>
+    <div class="box box-gray box-xl">Best Model + trained_models dict</div>
+  </div>
+  <p class="fig-caption">Figure 4.5: AutoML training pipeline with trust-weighted cross-validation and reliability-adjusted model selection.</p>
+</div>
+
+<!-- FIG 4.6 ER DIAGRAM PLACEHOLDER - see below -->
+
